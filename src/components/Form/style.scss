@@ -1,0 +1,146 @@
+@import "../../scss/theme.scss";
+@import "../../scss/mixins.scss";
+
+.form {
+  @include flex(column,center);
+  max-width: 400px;
+  min-width: 260px;
+  background-color: $white;
+  box-shadow: $shadow-container;
+  padding: 20px;
+  margin: 30px;
+  user-select: none;
+  border-radius: 8px;
+  &-label {
+    @include flex(row,center,space-between);
+    width: 100%;
+    margin: 15px 0 0 0;
+    font-size: 13px;
+    font-weight: 400;
+    color: $grey;
+    opacity: 0.6;
+    &-under {
+      @include flex(row,center,space-between);
+      width: 100%;
+      margin: 5px 0 0 0;
+      font-size: 13px;
+      font-weight: 400;
+      color: $grey;
+      opacity: 0.6;
+    }
+    &-uppercase {
+      @include flex(row,center,space-between);
+      width: 100%;
+      margin: 15px 0 0 0;
+      font-size: 13px;
+      font-weight: 400;
+      color: $grey;
+      text-transform: uppercase;
+      opacity: 0.6;
+    }
+    &-right {
+      @include flex(row,center,flex-end);
+      text-align: right;
+      font-size: 13px;
+      font-weight: 400;
+      color: $grey;
+      &-error {
+        @include flex(row,center,flex-end);
+        padding: 5px 0px;
+        text-align: right;
+        height: 100%;
+        font-size: 13px;
+        font-weight: 400;
+        color: $grey;
+        background-color: $lightorange;
+      }
+    }
+    &-error {
+      @include flex(row,center,flex-start);
+      box-sizing: border-box;
+      text-align: right;
+      width: 100%;
+      margin: 10px 0 0 0;
+      padding: 9px 0px;
+      font-size: 13px;
+      font-weight: 400;
+      color: $grey;
+      opacity: 0.6;
+      background-color: $lightorange;
+      &-icon {
+        padding: 0px 8px;
+        path {
+          fill: $blue;
+        }
+      }
+    }
+    &-note {
+      @include flex(row,center,flex-start,nowrap);
+      box-sizing: border-box;
+      text-align: left;
+      width: 100%;
+      margin: 10px 0 0 0;
+      font-size: 13px;
+      font-weight: 400;
+      color: $grey;
+      opacity: 0.6;
+    }
+    &-link-right {
+      @include flex(row,center,flex-end);
+      text-decoration: none;
+      box-sizing: border-box;
+      text-align: right;
+      font-size: 13px;
+      font-weight: 400;
+      color: $grey;
+    }
+  }
+
+  &-buttons {
+    @include flex(row,center,space-between);
+    box-sizing: border-box;
+    width: 100%;
+    &-one {
+      @include flex(row,center,center);
+      box-sizing: border-box;
+      width: 100%;
+    }
+  }
+}
+
+.input-label-data {
+  @include flex(row,center,space-between);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input-label-inner {
+  &-data {
+    @include flex(row,center);
+    cursor: pointer;
+    text-decoration: none;
+    color: $blue;
+    padding: 5px;
+  }
+  &-image {
+    width: 12px;
+    height: 100%;
+    margin-left: 5px;
+    path {
+      fill: $blue;
+    }
+  }
+}
+
+.modal-gas {
+  &-text {
+    font-size: 16px;
+    padding: 30px 30px 0px 30px;
+  }
+  &-buttons {
+    @include flex(row,center,center);
+    margin-top: 10px;
+  }
+}
+
+
