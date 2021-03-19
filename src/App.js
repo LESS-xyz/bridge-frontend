@@ -29,7 +29,6 @@ function App() {
         <Header/>
 
         <div className="body">
-
           {/*<div className="info">*/}
           {/*  <h1>*/}
           {/*    Rubik Crosschain Swap*/}

@@ -1,6 +1,16 @@
 @import "./scss/theme.scss";
 @import "./scss/mixins.scss";
 
+@font-face {
+  font-family: 'Sofia Pro';
+  src: local('Sofia Pro Regular'), local('Sofia-Pro-Regular'),
+  url('./assets/fonts/SofiaPro/SofiaProRegular.woff2') format('woff2'),
+  url('./assets/fonts/SofiaPro/SofiaProRegular.woff') format('woff'),
+  url('./assets/fonts/SofiaPro/SofiaProRegular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+}
+
 *::-webkit-scrollbar {
   width: 5px;
   height: 5px;
@@ -14,13 +24,20 @@
   background-color: $scrollbar;
 }
 
+html {
+  margin: 0px;
+  padding: 0px;
+  box-sizing: border-box;
+}
+
 body {
   margin: 0px;
-  font-family: $font;
+  font-family: $font4;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-weight: 500;
   background-color: $bg;
+  box-sizing: border-box;
 }
 
 h1 {
@@ -30,29 +47,34 @@ h1 {
 }
 
 input {
-  font-family: $font;
+  font-family: $font4;
 }
 
 input::placeholder {
-  font-family: $font;
+  font-family: $font4;
   color: $grey;
   opacity: 0.6;
 }
 
 .App {
+  position: relative;
   width: 100%;
   height: 100vh;
+  box-sizing: border-box;
   background-position: top, center;
   background-repeat: space;
 }
 
 .App-background {
-  position: absolute;
+  position: fixed;
+  top: 0;
   width: 100%;
   height: 100%;
   background-position: top, center;
   background-repeat: repeat;
   filter: grayscale(1);
+  z-index: -1;
+  box-sizing: border-box;
 }
 
 .App-container {
@@ -64,14 +86,9 @@ input::placeholder {
 
 .body {
   @include flex(row,normal,center);
-  padding: 100px + 37px 30px 100px 30px;
+  padding: 100px + 37px 30px 80px 30px;
   user-select: none;
-  @include b('mobile') {
-    padding: 90px + 33px 10px 260px 10px;
-  }
-  @include b('tablet') {
-    justify-content: center;
-  }
+  box-sizing: border-box;
 }
 
 .info {

@@ -519,7 +519,7 @@ function Form() {
       <div className={ isNetworkFromBinanceChain ? "form-buttons" : "form-buttons-one" }>
         { !userAddress ?
         <div
-        className="button-big mt20"
+        className="button mt20"
         onClick={ chooseWalletToConnect }
         >
           <IconArrowWhite className="button-arrow"/>
@@ -535,7 +535,7 @@ function Form() {
         </div>
         :
         <div
-        className="button-big mt20"
+        className="button mt20"
         onClick={ handleSwap }
         >
           <IconArrowWhite className="button-arrow"/>
