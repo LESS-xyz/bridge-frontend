@@ -38,5 +38,5 @@ export const getTokenLink = (network,tokenAddress) => {
 
 export const getTokenSymbol = (network) => {
   return network==='Binance-Chain' ? 'DDS' :
-  network==='Binance-Smart-Chain' ? 'DDS' : 'DDS'
+  network==='Binance-Smart-Chain' ? 'BDDS' : 'DDS'
 }

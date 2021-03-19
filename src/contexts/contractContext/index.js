@@ -92,7 +92,7 @@ const ContractProvider = ({ children }) => {
 
   const getDex = async () => {
     try {
-      const resultGetDex = await backendService.getDex({name:'Rubic'})
+      const resultGetDex = await backendService.getDex({name:'dds'})
       const dex = resultGetDex.data;
       dispatch(walletActions.setWalletDex(dex));
       console.log('resultGetDex',resultGetDex.data)

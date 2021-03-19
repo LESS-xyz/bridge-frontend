@@ -148,7 +148,7 @@ input::placeholder {
 }
 
 .button {
-  @include flex(row,center,center);
+  @include flex(row,center);
   cursor: pointer;
   background: $blue;
   padding: 0px 28px 0px 20px;
@@ -159,7 +159,7 @@ input::placeholder {
   white-space: nowrap;
   border-radius: 8px;
   &-big {
-    @include flex(row,center,center);
+    @include flex(row,center);
     cursor: pointer;
     background: $blue;
     padding: 0px 48px 0px 40px;
