@@ -1,5 +1,5 @@
 export default {
-  IS_PRODUCTION: false,
+  IS_PRODUCTION: true,
   serverDomain() {
     return this.IS_PRODUCTION ?
     `${window.location.origin}/api/v1` : `http://devdds.mywish.io/api/v1`
