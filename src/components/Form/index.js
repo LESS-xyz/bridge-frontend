@@ -241,7 +241,7 @@ function Form() {
       console.log('balanceOf',balance)
       const allowance = await contractService.allowance(userAddress,)
       console.log('allowance',allowance)
-      setApproving(false)
+      if (!intervalCheckAllowance) setApproving(false)
       if (allowance > 0 && amount <= allowance) {
         setApproved(true);
         clearInterval(intervalCheckAllowance);
