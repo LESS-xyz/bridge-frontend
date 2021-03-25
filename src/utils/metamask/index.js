@@ -12,19 +12,25 @@ export default class MetamaskService {
     this.net = config.IS_PRODUCTION ? 'mainnet' : 'testnet'
     this.providers = {};
     this.Web3Provider = new Web3(this.wallet);
-    this.wallet.on('chainChanged', (newChain) => {
-      localStorage.setItem('walletTypeOnChainChanged','metamask')
+    this.wallet && this.wallet.on('chainChanged', (newChain) => {
+      localStorage.setItem('walletTypeOnReload','metamask')
       window.location.reload()
     });
-    this.wallet.on('accountsChanged', (newAccounts) => {
+    this.wallet && this.wallet.on('accountsChanged', (newAccounts) => {
       console.log('accountsChanged',newAccounts)
+      localStorage.setItem('walletTypeOnReload','metamask')
       const accounts = JSON.parse(localStorage.getItem('accounts'))
       if (!accounts || !isEqual(accounts.accounts,newAccounts)) {
         localStorage.setItem('accounts',JSON.stringify({accounts:newAccounts}))
         window.location.reload()
       }
     });
-    this.wallet.on('message', (message) => {
+    this.wallet && this.wallet.on('disconnect', () => {
+      console.log('Binance wallet disconnected')
+      localStorage.setItem('walletTypeOnReload','metamask')
+      window.location.reload()
+    });
+    this.wallet && this.wallet.on('message', (message) => {
       console.log('Metamask message',message)
     });
     this.contractAddressToken = contractDetails.ADDRESS.TOKEN[networkFrom];
@@ -36,7 +42,7 @@ export default class MetamaskService {
 
   getContractAddressToken() { return this.contractAddressToken }
 
-  getAccount() {
+  async getAccount() {
     if (!this.wallet) return {errorMsg: `${this.name} wallet is not injected`}
     return new Promise((resolve, reject) => {
       const usedNet = config.chainIds[this.net][this.networkFrom].id
@@ -88,7 +94,8 @@ export default class MetamaskService {
     ]);
     const approveTransaction = () => {
       // gasPrice: 20 * 10e8 = 20 Gwei = 20 000 000 000 wei
-      const gasPrice = this.networkFrom==='Binance-Smart-Chain' ? '0x4A817C800' : undefined;
+      const gasPrice = this.networkFrom==='Binance-Smart-Chain' ?
+      this.Web3Provider.utils.toHex('20000000000') : undefined;
       return this.sendTransaction({
         from: userAddress,
         to: this.contractAddressSwap,
@@ -113,10 +120,14 @@ export default class MetamaskService {
       new BigNumber(amount).times(Math.pow(10, this.contractDecimals)).toString(10),
     ]);
     const approveTransaction = () => {
+      // gasPrice: 20 * 10e8 = 20 Gwei = 20 000 000 000 wei
+      const gasPrice = this.networkFrom==='Binance-Smart-Chain' ?
+      this.Web3Provider.utils.toHex('20000000000') : undefined;
       return this.sendTransaction({
         from: walletAddress,
         to: this.contractAddressToken,
         data: approveSignature,
+        gasPrice,
       }, callback);
     };
     const transaction = {

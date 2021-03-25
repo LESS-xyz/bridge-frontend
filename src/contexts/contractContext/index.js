@@ -17,30 +17,32 @@ const ContractProvider = ({ children }) => {
   const [contractDetails, setContractDetails] = React.useState(null)
 
   const dispatch = useDispatch();
-
+  const setUserData = (data) => dispatch(userActions.setUserData(data));
+  const toggleModal = (data) => dispatch(modalActions.toggleModal(data));
+  const setWalletDex = (data) => dispatch(walletActions.setWalletDex(data));
   const { walletType, networkFrom, networkTo } = useSelector(({ wallet }) => ({
     walletType: wallet.type,
     networkFrom: wallet.networkFrom,
     networkTo: wallet.networkTo,
   }))
 
-  const loginMetamask = async (interval) => {
+  const loginMetamask = async () => {
     try {
       console.log('loginMetamask',networkFrom,contractDetails)
-      const wallet = new MetamaskService({networkFrom,contractDetails})
-      // dispatch(modalActions.toggleModal({isOpen:true,text:'MetamaskService'}))
+      const wallet = new MetamaskService({
+        networkFrom,contractDetails
+      })
       await window.ethereum.enable()
-      // dispatch(modalActions.toggleModal({isOpen:true,text:'ethereum.enable'}))
-      setContractService(new ContractService({ wallet, networkFrom, contractDetails }))
+      setContractService(new ContractService({
+        wallet, networkFrom, contractDetails
+      }))
       setWalletService(wallet)
-      // dispatch(modalActions.toggleModal({isOpen:true,text:'ContractService'}))
       const account = await wallet.getAccount()
-      dispatch(userActions.setUserData(account))
-      interval && clearInterval(interval)
+      setUserData(account)
     } catch (e) {
       console.error(e);
       if (!e.errorMsg || e.errorMsg==='') {
-        dispatch(modalActions.toggleModal({
+        toggleModal({
           isOpen:true,
           text:
           <div>
@@ -52,9 +54,9 @@ const ContractProvider = ({ children }) => {
               <a href="https://metamask.io" target="_blank">metamask.io</a>
             </p>
           </div>
-        }))
+        })
       } else {
-        dispatch(modalActions.toggleModal({isOpen:true,text:e.errorMsg}))
+        toggleModal({isOpen:true,text:e.errorMsg})
       }
     }
   }
@@ -62,16 +64,19 @@ const ContractProvider = ({ children }) => {
   const loginBinance = async (interval) => {
     try {
       console.log('loginBinance',networkFrom)
-      const wallet = new BinanceService({networkFrom,contractDetails})
-      setContractService(new ContractService({ wallet, networkFrom, contractDetails }))
+      const wallet = new BinanceService({
+        networkFrom,contractDetails
+      })
+      setContractService(new ContractService({
+        wallet, networkFrom, contractDetails
+      }))
       setWalletService(wallet)
       const account = await wallet.getAccount()
-      dispatch(userActions.setUserData(account))
-      interval && clearInterval(interval)
+      setUserData(account)
     } catch (e) {
       console.error(e);
       if (!e.errorMsg || e.errorMsg==='') {
-        dispatch(modalActions.toggleModal({
+        toggleModal({
           isOpen:true,
           text:
           <div>
@@ -83,9 +88,9 @@ const ContractProvider = ({ children }) => {
               <a href="https://www.binance.org" target="_blank">binance.org</a>
             </p>
           </div>
-        }))
+        })
       } else {
-        dispatch(modalActions.toggleModal({isOpen:true,text:e.errorMsg}))
+        toggleModal({isOpen:true,text:e.errorMsg})
       }
     }
   }
@@ -94,7 +99,7 @@ const ContractProvider = ({ children }) => {
     try {
       const resultGetDex = await backendService.getDex({name:'dds'})
       const dex = resultGetDex.data;
-      dispatch(walletActions.setWalletDex(dex));
+      setWalletDex(dex);
       console.log('resultGetDex',resultGetDex.data)
       const tokens = dex.tokens;
       if (!dex) return dispatch(modalActions.toggleModal({
@@ -158,21 +163,19 @@ const ContractProvider = ({ children }) => {
     console.log('ContractContext useEffect contractDetails', contractDetails);
     if (!contractDetails) return;
     (async () => {
-      const walletTypeOnChainChanged = localStorage.getItem('walletTypeOnChainChanged')
-      if (walletTypeOnChainChanged === '') {
-        if (walletType === 'metamask') {
-          loginMetamask()
-        } else if (walletType === 'binance') {
-          loginBinance()
-        }
-      } else {
-        if (walletTypeOnChainChanged === 'metamask') {
-          loginMetamask()
-        } else if (walletTypeOnChainChanged === 'binance') {
-          loginBinance()
-        }
+      const walletTypeOnReload = localStorage.getItem('walletTypeOnReload')
+      if (
+      walletType === 'metamask' ||
+      walletTypeOnReload === 'metamask'
+      ) {
+        loginMetamask()
+      } else if (
+      walletType === 'binance' ||
+      walletTypeOnReload === 'binance'
+      ) {
+        loginBinance()
       }
-      localStorage.setItem('walletTypeOnChainChanged','')
+      localStorage.setItem('walletTypeOnReload','')
     })();
   }, [contractDetails])
 

@@ -219,8 +219,9 @@ function Form() {
     }
   }
 
-  const checkFields = async () => {
+  const checkFields = async ({txType}) => {
     try {
+      if (txType==='approve') return true;
       const balance = await contractService.balanceOf(userAddress)
       const isAmountNaN = isNaN(+amount);
       const isAmountLessThanMinimum = amount < minimumAmount;
@@ -256,12 +257,12 @@ function Form() {
 
   const approve = async () => {
     try {
-      const areAllFieldsOk = await checkFields();
+      const areAllFieldsOk = await checkFields({txType:'approve'});
       if (!areAllFieldsOk) return;
       setApproving(true)
       await contractService.approveToken(userAddress, async (res) => {
         console.log('approveToken', res)
-        if (!res) return setApproving(false);
+        if (res.status==='ERROR') return setApproving(false);
         const intervalCheckAllowance = setInterval(async () => {
           await checkAllowance(intervalCheckAllowance)
         },500)
@@ -278,7 +279,7 @@ function Form() {
   const swap = async () => {
     try {
       toggleModal({ isOpen: false, text: null, });
-      const areAllFieldsOk = await checkFields();
+      const areAllFieldsOk = await checkFields({txType:'swap'});
       if (!areAllFieldsOk) return;
       if (isNetworkFromBinanceChain) {
         const blockchain = networks && networks.filter((item) => item.key===networkTo)[0].id

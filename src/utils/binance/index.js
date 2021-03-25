@@ -10,10 +10,18 @@ export default class BinanceService {
     this.net = config.IS_PRODUCTION ? 'mainnet' : 'testnet'
     this.Web3Provider = new Web3(this.wallet);
     this.wallet && this.wallet.on('chainChanged', () => {
-      localStorage.setItem('walletTypeOnChainChanged','binance')
+      localStorage.setItem('walletTypeOnReload','binance')
       window.location.reload()
     });
-    this.wallet && this.wallet.on('accountsChanged', () => window.location.reload());
+    this.wallet && this.wallet.on('accountsChanged', () => {
+      localStorage.setItem('walletTypeOnReload','binance')
+      window.location.reload()
+    });
+    this.wallet && this.wallet.on('disconnect', () => {
+      console.log('Binance wallet disconnected')
+      localStorage.setItem('walletTypeOnReload','binance')
+      window.location.reload()
+    });
     this.contractAddressToken = contractDetails.ADDRESS.TOKEN[networkFrom];
     this.contractAddressSwap = contractDetails.ADDRESS.SWAP[networkFrom];
     this.contractAbiToken = contractDetails.ABI.TOKEN[networkFrom];
@@ -61,18 +69,22 @@ export default class BinanceService {
     return new this.Web3Provider.eth.Contract(abi, address);
   }
 
-  approveToken = (walletAddress, tokenAddress, amount, callback,) => {
+  approveToken = async (walletAddress, tokenAddress, amount, callback,) => {
+    const gasPriceNet = await this.Web3Provider.eth.getGasPrice()
     const approveMethod = this.getMethodInterface('approve', this.contractAbiToken);
     const approveSignature = this.encodeFunctionCall(approveMethod, [
       tokenAddress,
       new BigNumber(amount).times(Math.pow(10, this.contractDecimals)).toString(10),
     ]);
     const approveTransaction = () => {
+      // gasPrice: 20 * 10e8 = 20 Gwei = 20 000 000 000 wei
+      const gasPrice = this.networkFrom==='Binance-Smart-Chain' ?
+      this.Web3Provider.utils.toHex('20000000000') : this.Web3Provider.utils.toHex(gasPriceNet);
       return this.sendTransaction({
         from: walletAddress,
         to: this.contractAddressToken,
         data: approveSignature,
-        gasPrice: '0x4A817C800', // 20 * 10e8 = 20 Gwei = 20 000 000 000 wei
+        gasPrice,
       }, callback);
     };
     const transaction = {
@@ -93,11 +105,14 @@ export default class BinanceService {
       receiver,
     ]);
     const approveTransaction = () => {
+      // gasPrice: 20 * 10e8 = 20 Gwei = 20 000 000 000 wei
+      const gasPrice = this.networkFrom==='Binance-Smart-Chain' ?
+      this.Web3Provider.utils.toHex('20000000000') : undefined;
       return this.sendTransaction({
         from: userAddress,
         to: this.contractAddressSwap,
         data: approveSignature,
-        gasPrice: '0x4A817C800', // 20 * 10e8 = 20 Gwei = 20 000 000 000 wei
+        gasPrice,
       }, callback);
     };
     const transaction = {
