@@ -2,7 +2,7 @@ export default {
   IS_PRODUCTION: true,
   serverDomain() {
     return this.IS_PRODUCTION ?
-    `${window.location.origin}/api/v1` : `http://devdds.mywish.io/api/v1`
+    `https://api.dds.store/api/v1` : `http://devdds.mywish.io/api/v1`
   },
   links: {
     twitter: '',
